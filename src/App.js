@@ -24,6 +24,7 @@ function App() {
         <Route path='/ostukorv' exact element={ <Ostukorv /> }></Route>
       </Routes>
     </div>
+    
 
   );
 }

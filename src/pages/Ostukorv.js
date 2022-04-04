@@ -1,7 +1,19 @@
 import { useState } from "react";
 
 function Ostukorv() {
-    const [ostukorv, muudaOstukorvi] = useState(["element nr1","element nr2", 4, 5, 6]);
+
+    //useState - vasakpoolset kasutan HTML-s (ostukorv)
+    // parempoolse abil muudan vasakpoolset - kui toimub muutus, siis uueneb ka HTML
+    // useState() - sulgude sees on vasakpoolse muutuja algväärtus ehk mida näidatakse sel hetkel kui lehele tullakse
+    const [ostukorv, muudaOstukorvi] = useState(saaOstukorviTooted());
+
+    function saaOstukorviTooted() {
+        if (localStorage.getItem("ostukorviTooted") !== null) {
+            return JSON.parse(localStorage.getItem("ostukorviTooted"));
+        }   else {
+            return [];
+        }
+    }
 // kustuta kõik tooted ostukorvist
     function kustutaToode(toode) {
 // js how to delete element from array
@@ -13,11 +25,27 @@ function Ostukorv() {
         ostukorv.splice(index,1);
         console.log(ostukorv);
         muudaOstukorvi(ostukorv.slice());
+        localStorage.setItem("ostukorviTooted", JSON.stringify(ostukorv));
+
     }
 
     function lisaToode(toode) {
         ostukorv.push(toode);
         muudaOstukorvi(ostukorv.slice());
+        localStorage.setItem("ostukorviTooted", JSON.stringify(ostukorv));
+    }
+
+    function tyhjenda() {
+        muudaOstukorvi([]); // Html muutmine
+        localStorage.setItem("ostukorviTooted", JSON.stringify([])); //Localstorage uuendamine
+
+    }
+
+    function arvutaOstukorviKogusumma() {
+        let koguSumma = 0;
+        ostukorv.forEach(element => koguSumma = koguSumma + element.hind);
+    
+        return koguSumma;
     }
 
     return(
@@ -25,19 +53,21 @@ function Ostukorv() {
         {ostukorv.length > 0 && 
         <div>
             <div>Kokku on {ostukorv.length} toodet ostukorvis</div>
-            <button onClick={() => muudaOstukorvi([])}>Tühjenda</button>
+            <button onClick={() => tyhjenda([])}>Tühjenda</button>
         </div>}
         
         {ostukorv.length === 0 && <div>Ostukorv on tühi</div>}
+
         { ostukorv.map(element => 
             <div>
-                <div>Nimi: {element}</div>
-                <div>Hind: 3</div>
+                <div>Nimi: {element.nimi}</div>
+                <div>Hind: {element.hind}</div>
                 <div>Kategooria: karastusjoogid</div>
                 <button onClick={() => kustutaToode(element)}>X</button>
                 <button onClick={() => lisaToode(element)}>Lisa</button>
             </div>
         ) }
+        <div>KOKKU: {arvutaOstukorviKogusumma()} €</div>
     </div>
     // see on kuidas teha dünaamilist listi javascriptiga
     )

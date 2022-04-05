@@ -32,6 +32,7 @@ function Ostukorv() {
     function lisaToode(toode) {
         ostukorv.push(toode);
         muudaOstukorvi(ostukorv.slice());
+        console.log(ostukorv);
         localStorage.setItem("ostukorviTooted", JSON.stringify(ostukorv));
     }
 
@@ -53,11 +54,13 @@ function Ostukorv() {
         {ostukorv.length > 0 && 
         <div>
             <div>Kokku on {ostukorv.length} toodet ostukorvis</div>
-            <button onClick={() => tyhjenda([])}>Tühjenda</button>
+            <button onClick={() => tyhjenda()}>Tühjenda</button>
         </div>}
         
+        <div>
         {ostukorv.length === 0 && <div>Ostukorv on tühi</div>}
-
+        </div>
+        
         { ostukorv.map(element => 
             <div>
                 <div>Nimi: {element.nimi}</div>

@@ -1,14 +1,23 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Avaleht() {
-    const [tooted, uuendaTooted] = useState(
-        [
-            {nimi: "Coca", hind: 1, aktiivne: true},
-            {nimi: "Fanta", hind: 3, aktiivne: false},
-            {nimi: "Sprite", hind: 2, aktiivne: true}
-        ]
-    );
+    const [tooted, uuendaTooted] = useState(saaTooted());
 
+    function saaTooted() {
+        let tootedLS = localStorage.getItem("tooted");
+
+        if (tootedLS !== null) {  // saab ka nii: if (tootedLS) {}
+            return JSON.parse(tootedLS);
+        } else {
+            return [
+                {nimi: "Coca", hind: 1, aktiivne: true},
+                {nimi: "Fanta", hind: 3, aktiivne: false},
+                {nimi: "Sprite", hind: 2, aktiivne: true}
+            ]; 
+        }  
+    }
+    
     function lisaOstukorvi(toode) {
         console.log(toode);
 
@@ -40,9 +49,10 @@ function Avaleht() {
         <div>
             {tooted.map(element =>
                 <div>
-                    <div>{element.nimi}</div>
-                    <div>{element.hind}</div>
-    
+                    <Link to={"/toode/" + element.nimi.replaceAll(" ", "-").toLowerCase()}>
+                        <div>{element.nimi}</div>
+                        <div>{element.hind}</div>
+                    </Link>
                     <button onClick={() => lisaOstukorvi(element)}>Lisa</button>
                     </div>)}
         </div>)
